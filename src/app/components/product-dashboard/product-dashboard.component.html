@@ -1,0 +1,67 @@
+<div class="dashboard">
+  <h2>Gestión de Productos</h2>
+
+  <button class="btn-add" (click)="openAddProductModal(content)">Agregar producto</button>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products$ | async">
+            <td data-label="Nombre">{{ product.name }}</td>
+            <td data-label="Precio">{{ product.price | currency }}</td>
+            <td data-label="Stock">{{ product.stock }}</td>
+            <td>
+              <button class="btn-delete" (click)="deleteProduct(product.id)">Eliminar</button>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal igual que antes -->
+  <ng-template #content let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Agregar Producto</h4>
+      <button type="button" class="btn-close" (click)="modal.dismiss()"></button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="productForm">
+        <div>
+          <label>Nombre</label>
+          <input formControlName="name" class="form-control" />
+          <div *ngIf="productForm.get('name')?.invalid && productForm.get('name')?.touched" class="error">
+            El nombre es obligatorio
+          </div>
+        </div>
+
+        <div>
+          <label>Precio</label>
+          <input type="number" formControlName="price" class="form-control" />
+          <div *ngIf="productForm.get('price')?.invalid && productForm.get('price')?.touched" class="error">
+            El precio debe ser mayor a 0
+          </div>
+        </div>
+
+        <div>
+          <label>Stock</label>
+          <input type="number" formControlName="stock" class="form-control" />
+          <div *ngIf="productForm.get('stock')?.invalid && productForm.get('stock')?.touched" class="error">
+            El stock no puede ser negativo
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="modal.dismiss()">Cancelar</button>
+      <button class="btn btn-primary" (click)="saveProduct(modal)" [disabled]="productForm.invalid">Guardar</button>
+    </div>
+  </ng-template>
+</div>
